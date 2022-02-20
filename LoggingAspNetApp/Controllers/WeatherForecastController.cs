@@ -26,6 +26,7 @@ namespace LoggingAspNetApp.Controllers
         [HttpGet]
         public IEnumerable<WeatherForecast> Get()
         {
+            _logger.LogInformation("some message");
             var rng = new Random();
             return Enumerable.Range(1, 5).Select(index => new WeatherForecast
             {
@@ -35,5 +36,17 @@ namespace LoggingAspNetApp.Controllers
             })
             .ToArray();
         }
+
+        [HttpPost]
+        public async Task<ActionResult<string>> Get(GetWeatherById request)
+        {
+            var summary = Task.FromResult(Summaries[request.Id]);
+            return Ok(summary);
+        }
+    }
+
+    public class GetWeatherById
+    {
+        public int Id { get; set; }
     }
 }

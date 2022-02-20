@@ -1,0 +1,11 @@
+version: "3.9"
+services:
+    loggin_seq_svc:
+        image: datalust/seq:2021.4
+        restart: unless-stopped
+        container_name: seq-logging
+        environment:
+            - "ACCEPT_EULA=Y"
+        ports:
+            - 8081:80
+            - 5341:5341

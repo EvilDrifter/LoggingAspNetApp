@@ -37,16 +37,28 @@ namespace LoggingAspNetApp.Controllers
             .ToArray();
         }
 
-        [HttpPost]
-        public async Task<ActionResult<string>> Get(GetWeatherById request)
+        [HttpGet("{id}")]
+        public async Task<ActionResult<Employee>> GetByID(int id)
         {
-            var summary = Task.FromResult(Summaries[request.Id]);
-            return Ok(summary);
+            var employee = new Employee()
+            {
+                ID = id,
+                FirstName = "firstName",
+                LastName = "lastName",
+                DateOfBirth = DateTime.Now.AddYears(-31)
+            };
+
+            var res = await Task.FromResult(employee);
+
+            return Ok(res);
         }
     }
 
-    public class GetWeatherById
+    public class Employee
     {
-        public int Id { get; set; }
+        public int ID { get; set; }
+        public string FirstName { get; set; }
+        public string LastName { get; set; }
+        public DateTime DateOfBirth { get; set; }
     }
 }

@@ -1,10 +1,12 @@
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.OpenApi.Models;
 using Serilog;
+using Serilog.Events;
 
 namespace LoggingAspNetApp
 {
@@ -38,7 +40,7 @@ namespace LoggingAspNetApp
                 app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "LoggingAspNetApp v1"));
             }
 
-            app.UseSerilogRequestLogging();
+            app.UseMiddleware<SerilogMiddleware>();
 
             app.UseRouting();
 

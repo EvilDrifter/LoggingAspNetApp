@@ -1,11 +1,49 @@
 version: "3.9"
 services:
-    loggin_seq_svc:
-        image: datalust/seq:2021.4
-        restart: unless-stopped
-        container_name: seq-logging
-        environment:
-            - "ACCEPT_EULA=Y"
-        ports:
-            - 8081:80
-            - 5341:5341
+  loggin_seq_svc:
+    image: datalust/seq:2021.4
+    restart: unless-stopped
+    container_name: seq-logging
+    environment:
+      - "ACCEPT_EULA=Y"
+    ports:
+      - 8081:80
+      - 5341:5341
+  es01:
+    image: docker.elastic.co/elasticsearch/elasticsearch:7.9.0
+    container_name: es01
+    environment:
+      - xpack.monitoring.enabled=true
+      - xpack.watcher.enabled=false
+      - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
+      - discovery.type=single-node
+    ulimits:
+      memlock:
+        soft: -1
+        hard: -1
+    volumes:
+      - data01:/usr/share/elasticsearch/data
+    ports:
+      - 9200:9200
+    networks:
+      - elastic
+
+  kib01:
+    image: docker.elastic.co/kibana/kibana:7.9.0
+    restart: unless-stopped
+    container_name: kib01
+    environment:
+        - ELASTICSEARCH_URL=http://es01:9200
+        - ELASTICSEARCH_HOSTS=http://es01:9200
+    ports:
+        - 5601:5601
+    networks:
+        - elastic
+
+volumes:
+  data01:
+    driver: local
+
+networks:
+  elastic:
+    driver: bridge
